@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>coalburn - restart your Node app on every save</title>
+  <meta name="description" content="A small file watcher for Node.js. It restarts your app when files change and can reload the browser too.">
+  <meta property="og:title" content="coalburn">
+  <meta property="og:description" content="Restart your Node app on every save, with optional browser live reload.">
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="preload" href="fonts/plex-sans.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+  <header class="wrap nav">
+    <a class="brand" href="#top" id="top">
+      <img src="logo.png" width="24" height="24" alt="">
+      coalburn
+    </a>
+    <nav>
+      <a href="#usage">Usage</a>
+      <a href="#live-reload">Live reload</a>
+      <a href="https://www.npmjs.com/package/coalburn">npm</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="wrap hero">
+      <div>
+        <h1><span>Save a file.</span> <span>Your app restarts.</span></h1>
+        <p class="lede">coalburn watches your project and restarts your Node.js app when files change. Add <code>--port</code> and the browser reloads too.</p>
+        <div class="install">
+          <code id="install-cmd">npm i -g coalburn</code>
+          <button type="button" id="copy">Copy</button>
+        </div>
+        <a class="secondary" href="#usage">See usage</a>
+      </div>
+
+      <div class="term" aria-label="coalburn running in a terminal">
+        <div id="term">
+          <span class="line cmd" data-wait="0">coalburn --port 3000 app.js</span>
+          <span class="line" data-wait="500"><span class="tag">[coalburn]</span> Watching /Users/you/my-app</span>
+          <span class="line" data-wait="60"><span class="tag">[coalburn]</span> Live reload on http://localhost:3000 (app gets port 56195 as process.env.PORT)</span>
+          <span class="line" data-wait="60"><span class="tag">[coalburn]</span> Starting app.js</span>
+          <span class="line" data-wait="250">Server running on port 56195</span>
+          <span class="line" data-wait="1000"><span class="tag">[coalburn]</span> Open http://localhost:3000</span>
+          <span class="line" data-wait="1800"><span class="tag">[coalburn]</span> File changed: app.js</span>
+          <span class="line" data-wait="300"><span class="tag">[coalburn]</span> Restarting...</span>
+          <span class="line" data-wait="80"><span class="tag">[coalburn]</span> Starting app.js</span>
+          <span class="line" data-wait="250">Server running on port 56195</span>
+          <span class="line" data-wait="1000"><span class="tag">[coalburn]</span> Reloading browser...</span>
+        </div>
+        <button type="button" id="replay">Replay</button>
+      </div>
+    </section>
+
+    <section class="wrap block" id="usage">
+      <h2>Usage</h2>
+      <p class="intro">Run it from your project folder. Needs Node.js 20.19 or newer.</p>
+      <dl class="commands">
+        <div>
+          <dt><code>coalburn app.js</code></dt>
+          <dd>Runs the file with Node and restarts it when anything in the folder changes.</dd>
+        </div>
+        <div>
+          <dt><code>coalburn node server.js --verbose</code></dt>
+          <dd>Runs any command. Flags after the command go to your app.</dd>
+        </div>
+        <div>
+          <dt><code>coalburn --port 3000 app.js</code></dt>
+          <dd>Serves your app on port 3000 and reloads open tabs after each restart.</dd>
+        </div>
+        <div>
+          <dt><code>coalburn --port 3000 --reload-delay 500 app.js</code></dt>
+          <dd>Reloads the browser half a second after the app is back, instead of one second.</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="wrap block" id="live-reload">
+      <h2>How live reload works</h2>
+      <p class="flow">
+        <span>browser</span>
+        <span class="arrow" aria-hidden="true">&rarr;</span>
+        <span>coalburn on :3000</span>
+        <span class="arrow" aria-hidden="true">&rarr;</span>
+        <span>your app on a free port</span>
+      </p>
+
+      <div class="split">
+        <div>
+          <p>coalburn takes the port you open and gives your app a free one through <code>process.env.PORT</code>. Every HTML page it passes along gets a tiny script that waits for a reload message.</p>
+          <p>After a restart it waits until your app answers, then one more second, then reloads every open tab.</p>
+        </div>
+        <figure>
+          <pre><code>const PORT = <span class="tag">process.env.PORT</span> || 3000;
+app.listen(PORT);</code></pre>
+          <figcaption>The one change your app needs.</figcaption>
+        </figure>
+      </div>
+
+      <div class="table-wrap">
+        <table class="options">
+          <thead>
+            <tr><th>Option</th><th>What it does</th><th>Default</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>--port &lt;port&gt;</code></td><td>Serve the app on this port with live reload</td><td>off</td></tr>
+            <tr><td><code>--reload-delay &lt;ms&gt;</code></td><td>Wait this long after the app is up before reloading</td><td><code>1000</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="wrap block">
+      <h2>What it handles</h2>
+      <ul class="handles">
+        <li>Skips <code>node_modules</code> and <code>.git</code>.</li>
+        <li>Waits 300 ms after the last change, so one save means one restart.</li>
+        <li>Starts the new process only after the old one exits, so the port is free.</li>
+        <li>If your app crashes, it waits for your next save instead of looping.</li>
+        <li>Ctrl+C stops everything. Press it twice if your app won't quit.</li>
+        <li>One direct dependency: chokidar.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    <span>coalburn is MIT licensed.</span>
+    <a href="https://www.npmjs.com/package/coalburn">View on npm</a>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

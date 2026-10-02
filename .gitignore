@@ -1,0 +1,6 @@
+node_modules/
+*.log
+*.tgz
+.vercel/
+.env
+.DS_Store

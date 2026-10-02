@@ -1,0 +1,29 @@
+{
+  "name": "coalburn",
+  "version": "1.0.0",
+  "description": "Restarts your Node.js app when files change, with optional browser live reload",
+  "homepage": "https://coalburn.himanshubuilds.in",
+  "type": "module",
+  "bin": {
+    "coalburn": "src/index.js"
+  },
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "watch",
+    "restart",
+    "reload",
+    "livereload",
+    "nodemon",
+    "cli",
+    "development"
+  ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "chokidar": "^5.0.0"
+  }
+}
