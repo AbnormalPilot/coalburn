@@ -1,6 +1,11 @@
-<img src="https://coalburn.himanshubuilds.in/logo.png" alt="coalburn logo" width="96">
-
-# coalburn
+<p>
+  <img src="https://coalburn.himanshubuilds.in/logo.png" alt="coalburn logo" width="64" align="middle">
+  &nbsp;
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://coalburn.himanshubuilds.in/wordmark-white.png">
+    <img src="https://coalburn.himanshubuilds.in/wordmark-coal.png" alt="COAL BURN" height="40" align="middle">
+  </picture>
+</p>
 
 Restarts your Node.js app when files change. Like a small [nodemon](https://nodemon.io), with optional browser live reload.
 
