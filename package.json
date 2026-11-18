@@ -1,6 +1,6 @@
 {
   "name": "coalburn",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Restarts your Node.js app when files change, with optional browser live reload",
   "homepage": "https://coalburn.himanshubuilds.in",
   "repository": {
